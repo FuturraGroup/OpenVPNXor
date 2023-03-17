@@ -1,4 +1,7 @@
 # OpenVPNXor
+<p align="center">
+  <img width="280" height="280" src="https://user-images.githubusercontent.com/7910769/225934094-82104453-cc6e-4723-a763-8f664eea2cab.png">
+</p>
 
 Library for connecting via OpenVPN protocol for iOS and macOS platforms. The library supports [Xor patch](https://github.com/clayface/openvpn_xorpatch).
 
