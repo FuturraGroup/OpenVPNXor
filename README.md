@@ -19,7 +19,67 @@ OpenVPNXor is available with CocoaPods.
 [CocoaPods](https://cocoapods.org) is a dependency manager for Cocoa projects. For usage and installation instructions, visit their website. To integrate OpenVPNXor into your Xcode project using CocoaPods, specify it in your `Podfile`:
 
 ```ruby
-pod 'OpenVPNXor'
+platform :ios, '11.0'
+use_frameworks!
+
+def sharedPods
+  pod 'OpenVPNXor'
+end
+
+target 'Example VPN' do
+sharedPods
+end
+
+target 'PacketTunnelOpenVPN' do
+sharedPods
+end
+```
+## Usage
+
+First, you need to add a [Packet Tunnel Provider extension](https://developer.apple.com/documentation/networkextension/packet_tunnel_provider) and create [App Group identifier](https://developer.apple.com/documentation/xcode/configuring-app-groups).
+
+Next, you need to call the `setup` method to initialize the library. You need to pass the bundle id of the Packet Tunnel extension and the App Group identifier to this method. App Group identifier to be same for App and packet tunnel provider.
+
+```swift
+import OpenVPNXor
+
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+
+        OpenVPNManager.setup(openvpnPacketTunnelIdentifier: "com.example.bundle.PacketTunnelOpenVPN", appGroupIdentifier: "group.com.example.bundle")
+        
+        return true
+    }
+```
+
+`PacketTunnelProvider` class configuration.
+```swift
+import NetworkExtension
+import OpenVPNXor
+import os.log
+
+extension OSLog {
+    private static var subsystem = Bundle.main.bundleIdentifier!
+    /// Logs the view cycles like viewDidLoad.
+    static let viewCycle = OSLog(subsystem: subsystem, category: "PacketTunnel")
+}
+
+class PacketTunnelProvider: OpenVPNPacketTunnelProvider {
+
+    override func startTunnel(options: [String : NSObject]?, completionHandler: @escaping (Error?) -> Void) {
+        // Add code here to start the process of connecting the tunnel.
+        os_log("startTunnel!", log: OSLog.viewCycle, type: .info)
+        super.startTunnel(options: options, completionHandler: completionHandler)
+    }
+
+    override func stopTunnel(with reason: NEProviderStopReason, completionHandler: @escaping () -> Void) {
+        // Add code here to start the process of stopping the tunnel.
+        super.stopTunnel(with: reason, completionHandler: completionHandler)
+    }
+
+    override func handleAppMessage(_ messageData: Data, completionHandler: ((Data?) -> Void)?) {
+        super.handleAppMessage(messageData, completionHandler: completionHandler)
+    }
+}
 ```
 ## Contribute
 
