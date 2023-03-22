@@ -66,13 +66,13 @@ extension OSLog {
 class PacketTunnelProvider: OpenVPNPacketTunnelProvider {
 
     override func startTunnel(options: [String : NSObject]?, completionHandler: @escaping (Error?) -> Void) {
-        // Add code here to start the process of connecting the tunnel.
+        /// Add code here to start the process of connecting the tunnel.
         os_log("startTunnel!", log: OSLog.viewCycle, type: .info)
         super.startTunnel(options: options, completionHandler: completionHandler)
     }
 
     override func stopTunnel(with reason: NEProviderStopReason, completionHandler: @escaping () -> Void) {
-        // Add code here to start the process of stopping the tunnel.
+        /// Add code here to start the process of stopping the tunnel.
         super.stopTunnel(with: reason, completionHandler: completionHandler)
     }
 
@@ -80,6 +80,83 @@ class PacketTunnelProvider: OpenVPNPacketTunnelProvider {
         super.handleAppMessage(messageData, completionHandler: completionHandler)
     }
 }
+```
+Saving configuration of the profile in the Network Extension preferences of the `.ovpn` file.
+```swift
+let configurationFileContent = // .ovpn config file
+let login = "login"
+let pass = "password"
+            
+OpenVPNManager.shared.configureVPN(openVPNConfiguration: configurationFileContent, login: login, pass:pass) { success in
+    if success {
+        /// Profile saved successfully.
+    } else {
+        /// Error saving profile. See the description of the error in the delegate method - `VpnManagerConnectionFailed`
+    }
+}
+```
+Start VPN connection by calling the following code.
+```swift
+OpenVPNManager.shared.connectVPN { errorDescription in
+    /// If an error occurred while connecting, the `errorDescription` variable will contain a description of the error.
+}
+```
+Disconnect VPN
+```swift
+OpenVPNManager.shared.disconnectVPN()
+```
+Using the `onVPNStatusChange` block, you can track changes in connection status.
+```swift
+OpenVPNManager.shared.onVPNStatusChange = { (status) in
+    switch status {
+    case .invalid:
+        /** @const VPNStatusDisconnected The VPN is disconnected. */
+        break
+    case .disconnected:
+        /** @const VPNStatusDisconnected The VPN is disconnected. */
+        break
+    case .connecting:
+        /** @const VPNStatusConnecting The VPN is connecting. */
+        break
+    case .connected:
+        /** @const VPNStatusConnected The VPN is connected. */
+        break
+    case .reasserting:
+        /** @const VPNStatusReasserting The VPN is reconnecting following loss of underlying network connectivity. */
+        break
+    case .disconnecting:
+        /** @const VPNStatusDisconnecting The VPN is disconnecting. */
+        break
+    }
+}
+```
+Also at any time you can take the status with a variable `OpenVPNManager.shared.vpnStatus`
+### VPNManagerDelegate
+If an error occurred while saving the profile or connecting, this method will return a description of the error.
+```swift
+func VpnManagerConnectionFailed(error : VPNCollectionErrorType , localizedDescription : String)
+```
+The method will be called upon successful connection.
+```swift
+func VpnManagerConnected()
+```
+The method to be called after disconnecting from the VPN server.
+```swift
+func VpnManagerDisconnected()
+```
+The method will be called after successfully saving the configuration of the profile in the Network Extension preferences.
+```swift
+func VpnManagerProfileSaved()
+```
+Network Traffic Statistics
+```swift
+func VpnManagerPacketTransmitted(with bitrate: Bitrate) {
+    print("NetworkTrafficStatistics - ", NetworkTrafficStatistics.formBitrateString(with: bitrate))
+}
+```
+VPN session logs.
+```swift
+func VpnManagerLogs(log : String?)
 ```
 ## Contribute
 
