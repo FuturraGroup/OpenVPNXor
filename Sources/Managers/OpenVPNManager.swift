@@ -207,7 +207,7 @@ public class OpenVPNManager: NSObject {
     
     /* You can change this method. Currently it requires the name of file and extension will be added.
      */
-    public func configureVPN(openVPNConfiguration: Data?, login:String, pass:String, callback: ((Bool) -> Void)?) {
+    public func configureVPN(openVPNConfiguration: Data?, login:String, pass:String, disconnectOnSleep:Bool = false, callback: ((Bool) -> Void)?) {
         
         guard let openVPNData = openVPNConfiguration else {
             fatalError("OpenVPNXor Error: Configuration not provided")
@@ -221,7 +221,7 @@ public class OpenVPNManager: NSObject {
         tunnelProtocol.providerBundleIdentifier = OpenVPNManager.config.openvpnPackettunnelIdentifier
         
         // Set this to true so the system handles the disconnect when the main app isn't running
-        tunnelProtocol.disconnectOnSleep = true
+        tunnelProtocol.disconnectOnSleep = disconnectOnSleep
         
         // Use `providerConfiguration` to save content of the ovpn file.
         // if you need to use credential pass two extra keys "user" and "pass" in Data type
