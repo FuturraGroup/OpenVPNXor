@@ -94,6 +94,9 @@ public class OpenVPNManager: NSObject {
     public var vpnStatus = VPNStatus(rawValue: 0)
     public var onVPNStatusChange: ((_ status: VPNStatus) -> Void)?
     public var delegate : VPNManagerDelegate?
+    public var disconnectOnSleep:Bool = false
+    public var appName = Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String
+    public var isOnDemandEnabled:Bool? = true
     
     // Shared singleton
     public static let shared = OpenVPNManager()
@@ -201,27 +204,23 @@ public class OpenVPNManager: NSObject {
             OpenVPNManager.shared.startNetworkStatistics()
             self.delegate!.VpnManagerConnected()
         }
-        
     }
-    
     
     /* You can change this method. Currently it requires the name of file and extension will be added.
      */
-    public func configureVPN(openVPNConfiguration: Data?, login:String, pass:String, disconnectOnSleep:Bool = false, callback: ((Bool) -> Void)?) {
+    public func configureVPN(openVPNConfiguration: Data?, login:String, pass:String, callback: ((Bool) -> Void)?) {
         
         guard let openVPNData = openVPNConfiguration else {
             fatalError("OpenVPNXor Error: Configuration not provided")
         }
         
         let tunnelProtocol = NETunnelProviderProtocol()
-        let appName = Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as! String
         // must be non-nil
         tunnelProtocol.serverAddress = "ServerAddress" // just to display
-        
         tunnelProtocol.providerBundleIdentifier = OpenVPNManager.config.openvpnPackettunnelIdentifier
         
         // Set this to true so the system handles the disconnect when the main app isn't running
-        tunnelProtocol.disconnectOnSleep = disconnectOnSleep
+        tunnelProtocol.disconnectOnSleep = self.disconnectOnSleep
         
         // Use `providerConfiguration` to save content of the ovpn file.
         // if you need to use credential pass two extra keys "user" and "pass" in Data type
@@ -241,9 +240,10 @@ public class OpenVPNManager: NSObject {
             guard let strongSelf = self else { return }
             
             strongSelf.providerManager?.protocolConfiguration = tunnelProtocol
-            strongSelf.providerManager?.localizedDescription = appName
+            strongSelf.providerManager?.localizedDescription = self?.appName
             strongSelf.providerManager?.isEnabled = true
-            
+            strongSelf.providerManager?.isOnDemandEnabled = self?.isOnDemandEnabled ?? true
+
             // Save configuration in the Network Extension preferences
             strongSelf.providerManager?.saveToPreferences { error in
                 if let error = error {
