@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'OpenVPNXor'
-  s.version          = '1.3'
+  s.version          = '1.4'
   s.summary          = 'Library for simple connection via OpenVPN protocol with Xor patch.'
 
   s.description      = <<-DESC
@@ -21,12 +21,9 @@ The library is designed to use in conjunction with NetworkExtension framework an
   s.author           = { 'Sergey Zhuravel' => 'sergey.zhuravel@icloud.com' }
 
   s.platform            = :ios, "11.0"
-  s.source            = { :http => 'https://github.com/FuturraGroup/OpenVPNXor/raw/main/releases/1.3/OpenVPNXor.framework.zip' }
-  s.ios.vendored_frameworks = 'OpenVPNXor.framework'
+  s.source            = { :http => 'https://github.com/FuturraGroup/OpenVPNXor/raw/main/releases/1.4/OpenVPNXor.framework.zip' }
+  s.ios.vendored_frameworks = 'OpenVPNXor.xcframework'
   s.ios.deployment_target = '11.0'
- s.pod_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
-  s.user_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
-
 
   
 end
