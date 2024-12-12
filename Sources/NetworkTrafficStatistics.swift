@@ -1,8 +1,8 @@
 import Foundation
 
 public struct Bitrate {
-    var download: UInt32
-    var upload: UInt32
+    public var download: UInt32
+    public var upload: UInt32
 }
 
 public class NetworkTrafficStatistics {
