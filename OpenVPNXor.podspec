@@ -24,9 +24,12 @@ The library is designed to use in conjunction with NetworkExtension framework an
   s.osx.deployment_target = '10.14'
   s.source            = { :http => 'https://github.com/FuturraGroup/OpenVPNXor/raw/main/releases/2.2/OpenVPNXor.framework.zip' }
   s.ios.vendored_frameworks = 'OpenVPNXor.framework'
-  s.ios.deployment_target = '12.0'
- s.pod_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
+  s.osx.vendored_frameworks = 'OpenVPNXor.framework'
+  s.source_files = 'Sources/**/*.{swift,h,m,mm}'
+  s.public_header_files = 'Sources/**/*.h'
+  s.pod_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
   s.user_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
+  s.swift_version = '5.0'
 
 
   
