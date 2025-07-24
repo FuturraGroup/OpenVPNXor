@@ -20,7 +20,8 @@ The library is designed to use in conjunction with NetworkExtension framework an
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'Sergey Zhuravel' => 'sergey.zhuravel@icloud.com' }
 
-  s.platform            = :ios, "12.0"
+  s.ios.deployment_target = '12.0'
+  s.osx.deployment_target = '10.14'
   s.source            = { :http => 'https://github.com/FuturraGroup/OpenVPNXor/raw/main/releases/2.2/OpenVPNXor.framework.zip' }
   s.ios.vendored_frameworks = 'OpenVPNXor.framework'
   s.ios.deployment_target = '12.0'
