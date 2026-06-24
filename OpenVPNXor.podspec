@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'OpenVPNXor'
-  s.version          = '2.5'
+  s.version          = '2.6'
   s.summary          = 'Library for simple connection via OpenVPN protocol with Xor patch.'
 
   s.description      = <<-DESC
@@ -21,12 +21,11 @@ The library is designed to use in conjunction with NetworkExtension framework an
   s.author           = { 'Sergey Zhuravel' => 'sergey.zhuravel@icloud.com' }
 
   s.platform            = :ios, "12.0"
-  s.source            = { :http => 'https://github.com/FuturraGroup/OpenVPNXor/raw/main/releases/2.5/OpenVPNXor.framework.zip' }
-  s.ios.vendored_frameworks = 'OpenVPNXor.framework'
+  s.source            = { :http => 'https://github.com/FuturraGroup/OpenVPNXor/raw/main/releases/2.6/OpenVPNXor.xcframework.zip' }
+  s.ios.vendored_frameworks = 'OpenVPNXor.xcframework'
   s.ios.deployment_target = '12.0'
- s.pod_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
-  s.user_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
-
-
-  
+  # Distributed as an .xcframework built with BUILD_LIBRARY_FOR_DISTRIBUTION=YES
+  # (module stability), so it no longer needs rebuilding per Xcode/Swift version.
+  # Ships device arm64 + simulator (arm64 + x86_64); the old arm64-simulator
+  # EXCLUDED_ARCHS workaround is therefore no longer required.
 end
